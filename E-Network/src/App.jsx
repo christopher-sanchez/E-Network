@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -11,7 +11,8 @@ import Header from './components/Header';
 function App() {
   const [authUser, setAuthUser] = useState(null);
   const [loading, setLoading] = useState(true);
-// functions to check if user is logged in
+  const location = useLocation();
+
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
       setAuthUser(user);
@@ -23,35 +24,31 @@ function App() {
     };
   }, []);
 
+  const showHeader = authUser && location.pathname !== '/login' && location.pathname !== '/register';
+
   if (loading) {
-    return <div>Loading...</div>; 
+    return <div className="loading-container">Loading...</div>; 
   }
-//Routing to the login or register page
+
   return (
-    <Routes>
-      <Route 
-        path="/login" 
-        element={!authUser ? <Login /> : <Navigate to="/" />} 
-      />
-      <Route 
-        path="/register" 
-        element={!authUser ? <Register /> : <Navigate to="/" />} 
-      />
-      <Route 
-        path="/" 
-        element={
-          authUser ? (
-            <>
-              <Header />
-              <Home />
-            </>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route path="*" element={<Navigate to={authUser ? "/" : "/login"} />} />
-    </Routes>
+    <div className="App">
+      {showHeader && <Header />}
+      <Routes>
+        <Route 
+          path="/login" 
+          element={!authUser ? <Login /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/register" 
+          element={!authUser ? <Register /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/" 
+          element={authUser ? <Home /> : <Navigate to="/login" />}
+        />
+        <Route path="*" element={<Navigate to={authUser ? "/" : "/login"} />} />
+      </Routes>
+    </div>
   );
 }
 

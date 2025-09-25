@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import { Link, useNavigate } from 'react-router-dom';
 import './Register.css';
 
 function Register() {
-  // firebase basic login
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -14,8 +14,16 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      console.log('User registered successfully!');
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Create a document in Firestore for the new user
+      await setDoc(doc(db, "users", user.uid), {
+        username: username,
+        email: email,
+      });
+
+      console.log('User registered successfully and data stored in Firestore!');
       navigate('/'); // Redirect to home page on successful registration
     } catch (error) {
       console.error('Error registering user:', error.message);

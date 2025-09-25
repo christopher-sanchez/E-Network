@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth, db } from '../firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 
@@ -17,6 +18,31 @@ function Login() {
       navigate('/'); // Redirect to home page on successful login
     } catch (error) {
       console.error('Error logging in:', error.message);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // Check if the user already exists in Firestore
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      // If the user doesn't exist, create a new document
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, {
+          username: user.displayName,
+          email: user.email,
+        });
+      }
+
+      console.log('User signed in with Google successfully!');
+      navigate('/'); // Redirect to home page
+    } catch (error) {
+      console.error('Error with Google Sign-In:', error.message);
     }
   };
 
@@ -47,6 +73,9 @@ function Login() {
           />
         </div>
         <button type="submit">Login</button>
+        <button type="button" onClick={handleGoogleSignIn} className="google-signin-button">
+          Sign in with Google
+        </button>
         <p className="register-link">
           Don't have an account? <Link to="/register">Register here</Link>
         </p>
