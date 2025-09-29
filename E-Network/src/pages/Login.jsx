@@ -76,6 +76,9 @@ function Login() {
         <button type="button" onClick={handleGoogleSignIn} className="google-signin-button">
           Sign in with Google
         </button>
+        <p className="forgot-password-link">
+          <Link to="/forgot-password">Forgot your password?</Link>
+        </p>
         <p className="register-link">
           Don't have an account? <Link to="/register">Register here</Link>
         </p>
