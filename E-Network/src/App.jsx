@@ -5,7 +5,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import './App.css';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import ForgotPassword from './pages/ForgotPassword'; // Import the new component
+import ForgotPassword from './pages/ForgotPassword';
+import Matches from './pages/Matches';
 import Home from './pages/Home';
 import Header from './components/Header';
 
@@ -25,7 +26,6 @@ function App() {
     };
   }, []);
 
-  // Hide header on login, register, and forgot-password pages
   const showHeader = authUser && !['/login', '/register', '/forgot-password'].includes(location.pathname);
 
   if (loading) {
@@ -47,6 +47,10 @@ function App() {
         <Route 
           path="/forgot-password" 
           element={!authUser ? <ForgotPassword /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/matches"
+          element={authUser ? <Matches /> : <Navigate to="/login" />}
         />
         <Route 
           path="/" 
