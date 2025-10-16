@@ -1,44 +1,66 @@
+
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
 .register-form {
-  width: 300px;
-  padding: 20px;
-  border: 1px solid #333;
-  border-radius: 5px;
-  background-color: #242424;
+    width: 350px;
+    padding: 20px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background-color: #242424;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
 .register-form h2 {
-  text-align: center;
-  margin-bottom: 20px;
+    margin-bottom: 1rem;
 }
 
 .input-group {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
+    text-align: left;
 }
 
 .input-group label {
-  display: block;
-  margin-bottom: 5px;
+    display: block;
+    margin-bottom: 5px;
 }
 
 .input-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #444;
-  border-radius: 3px;
-  background-color: #333;
-  color: white;
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 3px;
+    border: 1px solid #555;
+    background-color: #333;
+    color: white;
 }
 
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
+.error-message {
+    color: #dc3545;
+    margin-bottom: 1rem;
 }
 
-button:hover {
-  background-color: #0056b3;
+.login-link {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.login-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* Style for disabled buttons */
+button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
 }

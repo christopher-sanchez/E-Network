@@ -9,10 +9,14 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -23,10 +27,11 @@ function Register() {
         email: email,
       });
 
-      console.log('User registered successfully and data stored in Firestore!');
       navigate('/'); // Redirect to home page on successful registration
     } catch (error) {
-      console.error('Error registering user:', error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,6 +39,7 @@ function Register() {
     <div className="register-container">
       <form className="register-form" onSubmit={handleRegister}>
         <h2>Register</h2>
+        {error && <p className="error-message">{error}</p>}
         <div className="input-group">
           <label htmlFor="username">Username</label>
           <input 
@@ -43,6 +49,7 @@ function Register() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required 
+            disabled={loading}
           />
         </div>
         <div className="input-group">
@@ -54,6 +61,7 @@ function Register() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required 
+            disabled={loading}
           />
         </div>
         <div className="input-group">
@@ -65,9 +73,12 @@ function Register() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required 
+            disabled={loading}
           />
         </div>
-        <button type="submit">Register</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Registering...' : 'Register'}
+        </button>
         <p className="login-link">
           Already have an account? <Link to="/login">Login here</Link>
         </p>

@@ -1,18 +1,75 @@
 
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-
-  min-height: 80vh; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
 }
 
 .login-form {
-  width: 300px;
-  padding: 20px;
-  border: 1px solid #333;
-  border-radius: 5px;
-  background-color: #242424;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 350px;
+    padding: 20px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background-color: #242424;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.login-form h2 {
+    margin-bottom: 1rem;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 3px;
+    border: 1px solid #555;
+    background-color: #333;
+    color: white;
+}
+
+.google-signin-button {
+    margin-top: 10px;
+    background-color: #4285F4; /* Google's brand color */
+}
+
+.google-signin-button:hover {
+    background-color: #357ae8;
+}
+
+.error-message {
+    color: #dc3545;
+    margin-bottom: 1rem;
+}
+
+.register-link, .forgot-password-link {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.register-link a, .forgot-password-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.register-link a:hover, .forgot-password-link a:hover {
+    text-decoration: underline;
+}
+
+/* Style for disabled buttons */
+button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
 }

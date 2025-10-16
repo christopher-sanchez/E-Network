@@ -1,0 +1,61 @@
+.profile-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+  justify-content: center;
+}
+
+.preferences-form h2 {
+  margin-bottom: 20px;
+}
+
+.select-group {
+  margin-bottom: 20px;
+}
+
+.select-group label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.select-group select {
+  width: 100%;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 5px;
+}
+
+/* Style for the options within the select box */
+.select-group select option {
+  padding: 10px;
+  background-color: #333;
+  color: white;
+}
+
+/* Style for the scrollbar (for Webkit browsers like Chrome/Safari) */
+.select-group select::-webkit-scrollbar {
+  width: 12px;
+}
+
+.select-group select::-webkit-scrollbar-track {
+  background: #242424;
+}
+
+.select-group select::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 6px;
+  border: 3px solid #242424;
+}
+
+.message {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: #28a745; /* Green for success */
+}
+
+.error-message {
+    color: #dc3545; /* Red for error */
+}

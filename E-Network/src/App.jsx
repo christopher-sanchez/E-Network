@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Matches from './pages/Matches';
+import Profile from './pages/Profile';
 import Home from './pages/Home';
 import Header from './components/Header';
 
@@ -51,6 +52,10 @@ function App() {
         <Route 
           path="/matches"
           element={authUser ? <Matches /> : <Navigate to="/login" />}
+        />
+        <Route 
+          path="/profile"
+          element={authUser ? <Profile /> : <Navigate to="/login" />}
         />
         <Route 
           path="/" 

@@ -1,7 +1,8 @@
 
 import React, { useState } from 'react';
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import './ForgotPassword.css'; // We will create this file next
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from '../firebase'; // Correct import
+import './ForgotPassword.css';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -13,7 +14,6 @@ function ForgotPassword() {
     setMessage('');
     setError('');
 
-    const auth = getAuth();
     try {
       await sendPasswordResetEmail(auth, email);
       setMessage('Password reset email sent! Please check your inbox.');

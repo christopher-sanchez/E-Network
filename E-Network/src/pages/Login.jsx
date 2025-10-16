@@ -1,48 +1,41 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth, db } from '../firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth } from '../firebase';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      console.log('User logged in successfully!');
       navigate('/'); // Redirect to home page on successful login
     } catch (error) {
-      console.error('Error logging in:', error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
+    setLoading(true);
+    setError(null);
     try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      // Check if the user already exists in Firestore
-      const userDocRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
-
-      // If the user doesn't exist, create a new document
-      if (!userDoc.exists()) {
-        await setDoc(userDocRef, {
-          username: user.displayName,
-          email: user.email,
-        });
-      }
-
-      console.log('User signed in with Google successfully!');
+      await signInWithPopup(auth, provider);
       navigate('/'); // Redirect to home page
     } catch (error) {
-      console.error('Error with Google Sign-In:', error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,6 +43,7 @@ function Login() {
     <div className="login-container">
       <form className="login-form" onSubmit={handleLogin}>
         <h2>Login</h2>
+        {error && <p className="error-message">{error}</p>}
         <div className="input-group">
           <label htmlFor="email">Email</label>
           <input 
@@ -59,6 +53,7 @@ function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required 
+            disabled={loading}
           />
         </div>
         <div className="input-group">
@@ -70,11 +65,14 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required 
+            disabled={loading}
           />
         </div>
-        <button type="submit">Login</button>
-        <button type="button" onClick={handleGoogleSignIn} className="google-signin-button">
-          Sign in with Google
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+        <button type="button" onClick={handleGoogleSignIn} className="google-signin-button" disabled={loading}>
+          {loading ? 'Signing in...' : 'Sign in with Google'}
         </button>
         <p className="forgot-password-link">
           <Link to="/forgot-password">Forgot your password?</Link>
