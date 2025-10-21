@@ -22,9 +22,7 @@ function Home() {
           setPreferences(userPrefs);
 
           // Fetch ALL upcoming matches from the backend
-          const response = await fetch('/api/matches/upcoming', { 
-            headers: { 'Authorization': `Bearer ${import.meta.env.VITE_PANDASCORE_API_KEY}` } 
-          });
+          const response = await fetch('/api/matches/upcoming');
 
           if (!response.ok) {
             throw new Error(`API call failed with status: ${response.status}`);
