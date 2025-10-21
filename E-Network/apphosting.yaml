@@ -1,0 +1,9 @@
+build:
+  run: npm install && npm run build
+serving:
+  public: dist
+  rewrites:
+    - source: /api/matches/upcoming
+      function: getUpcomingMatches
+    - source: /api/articles
+      function: getArticles
