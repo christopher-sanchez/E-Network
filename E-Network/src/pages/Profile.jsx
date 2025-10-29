@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { fetchLeagues, fetchTeams } from '../utils/api'; 
 import './Profile.css';
 
-// Hardcoded popular games with their official PandaScore IDs
 const popularGames = [
   { id: 1, name: 'League of Legends' },
   { id: 26, name: 'Valorant' },
@@ -13,16 +13,11 @@ const popularGames = [
 ];
 
 function Profile() {
-  // State for API data
   const [leagues, setLeagues] = useState([]);
   const [teams, setTeams] = useState([]);
-
-  // State for user's selections
   const [selectedGames, setSelectedGames] = useState([]);
   const [selectedLeagues, setSelectedLeagues] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
-
-  // State for loading and errors
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
@@ -36,18 +31,12 @@ function Profile() {
         try {
           const [prefsDoc, leaguesResponse, teamsResponse] = await Promise.all([
             getDoc(doc(db, 'users', currentUser.uid)),
-            fetch('/api/leagues?sort=-modified_at&per_page=100', { headers: { 'Authorization': `Bearer ${import.meta.env.VITE_PANDASCORE_API_KEY}` } }),
-            fetch('/api/teams?sort=-modified_at&per_page=100', { headers: { 'Authorization': `Bearer ${import.meta.env.VITE_PANDASCORE_API_KEY}` } })
+            fetchLeagues(),
+            fetchTeams()
           ]);
-
-          if (!leaguesResponse.ok) throw new Error(`Failed to fetch leagues: ${leaguesResponse.statusText}`);
-          if (!teamsResponse.ok) throw new Error(`Failed to fetch teams: ${teamsResponse.statusText}`);
-
-          const leaguesData = await leaguesResponse.json();
-          const teamsData = await teamsResponse.json();
-
-          setLeagues(leaguesData);
-          setTeams(teamsData);
+          
+          setLeagues(leaguesResponse.data);
+          setTeams(teamsResponse.data);
 
           if (prefsDoc.exists()) {
             const prefs = prefsDoc.data().preferences || {};

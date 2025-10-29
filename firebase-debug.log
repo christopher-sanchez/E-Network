@@ -1,0 +1,25 @@
+[debug] [2025-10-21T22:29:27.599Z] ----------------------------------------------------------------------
+[debug] [2025-10-21T22:29:27.605Z] Command:       /nix/store/ixbb20farqh1f4fqbmsn6b1ixn8mc8ij-nodejs-20.18.1/bin/node /nix/store/861z9924lx0974sd2ka1zh20lvw8bsdk-firebase-tools-13.10.0/lib/node_modules/firebase-tools/lib/bin/firebase.js init
+[debug] [2025-10-21T22:29:27.606Z] CLI Version:   13.10.0
+[debug] [2025-10-21T22:29:27.607Z] Platform:      linux
+[debug] [2025-10-21T22:29:27.607Z] Node Version:  v20.18.1
+[debug] [2025-10-21T22:29:27.607Z] Time:          Tue Oct 21 2025 22:29:27 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-10-21T22:29:27.608Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-10-21T22:29:27.854Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-10-21T22:29:27.854Z] > authorizing via signed-in user (pmko121101@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /home/user/E-Network
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+

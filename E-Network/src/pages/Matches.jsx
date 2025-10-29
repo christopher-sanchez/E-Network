@@ -1,27 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import './Matches.css';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import "./Matches.css";
 
-function Matches() {
+const Matches = () => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const response = await fetch('/api/matches/upcoming');
-
-        if (!response.ok) {
-          throw new Error(`API call failed with status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        // Sort matches by date
-        const sortedMatches = data.sort((a, b) => new Date(a.begin_at) - new Date(b.begin_at));
-        setMatches(sortedMatches);
-      } catch (err) {
-        setError(err.message);
+        const response = await axios.get("/api/matches/upcoming", {
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_PANDASCORE_TOKEN}`,
+          },
+        });
+        setMatches(response.data);
+      } catch (error) {
+        console.error("Error fetching matches:", error);
       } finally {
         setLoading(false);
       }
@@ -30,61 +26,31 @@ function Matches() {
     fetchMatches();
   }, []);
 
-  const filteredMatches = matches.filter(match => 
-    (match.league.name && match.league.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (match.videogame.name && match.videogame.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (match.opponents[0]?.opponent.name && match.opponents[0].opponent.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (match.opponents[1]?.opponent.name && match.opponents[1].opponent.name.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
   if (loading) {
-    return <div className="loading-container">Loading matches...</div>;
-  }
-
-  if (error) {
-    return <div className="error-container">Error: {error}</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-4xl font-bold">Loading...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="matches-container">
-      <h2>Upcoming Matches</h2>
-      <div className="search-container">
-        <input 
-          type="text"
-          placeholder="Search for a game, league, or team..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-      {filteredMatches.length > 0 ? (
-        <ul className="match-list">
-          {filteredMatches.map(match => (
-            <li key={match.id} className="match-item">
-              <div className="match-header">
-                <strong>{match.league.name}</strong> - <span>{match.videogame.name}</span>
-              </div>
-              <div className="match-details">
-                <div className="team-logo-container">
-                <img src={match.opponents[0]?.opponent.image_url || 'https://via.placeholder.com/50'} alt={match.opponents[0]?.opponent.name || 'TBD'} className="team-logo"/>
-                <span className="team">{match.opponents[0]?.opponent.name || 'TBD'}</span>
-                </div>
-                <span className="vs">vs</span>
-                <div className="team-logo-container">
-                <img src={match.opponents[1]?.opponent.image_url || 'https://via.placeholder.com/50'} alt={match.opponents[1]?.opponent.name || 'TBD'} className="team-logo"/>
-                <span className="team">{match.opponents[1]?.opponent.name || 'TBD'}</span>
-                </div>
-              </div>
-              <div className="match-time">
+    <div className="matches-page-container">
+      <h1 className="text-3xl font-bold mb-4">Upcoming Matches</h1>
+      <div className="matches-container">
+        {matches.map((match) => (
+          <div key={match.id} className="match-card">
+            <Link to={`/match/${match.id}`}>
+              <h2 className="match-name">{match.name}</h2>
+              <p className="text-gray-600">
                 {new Date(match.begin_at).toLocaleString()}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No matches found.</p>
-      )}
+              </p>
+            </Link>
+          </div>
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default Matches;

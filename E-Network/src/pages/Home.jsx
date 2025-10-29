@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { fetchUpcomingMatches } from '../utils/api';
 import './Home.css';
 
 function Home() {
@@ -21,17 +22,10 @@ function Home() {
           const userPrefs = userDoc.exists() ? userDoc.data().preferences : null;
           setPreferences(userPrefs);
 
-          // Fetch ALL upcoming matches from the backend
-          const response = await fetch('/api/matches/upcoming');
-
-          if (!response.ok) {
-            throw new Error(`API call failed with status: ${response.status}`);
-          }
-
-          let allMatches = await response.json();
+          const response = await fetchUpcomingMatches();
+          let allMatches = response.data;
           let finalMatches = [];
 
-          // Sort all matches by date initially
           allMatches.sort((a, b) => new Date(a.begin_at) - new Date(b.begin_at));
 
           if (userPrefs && userPrefs.games?.length > 0) {
@@ -39,10 +33,8 @@ function Home() {
             const leagueIds = userPrefs.leagues?.map(String) || [];
             const teamIds = userPrefs.teams?.map(String) || [];
 
-            // Filter all matches by selected games first
             const matchesByGame = allMatches.filter(match => gameIds.includes(String(match.videogame.id)));
 
-            // Attempt to filter by leagues and teams
             let specificMatches = [];
             if (leagueIds.length > 0 || teamIds.length > 0) {
               specificMatches = matchesByGame.filter(match => {
@@ -56,12 +48,12 @@ function Home() {
               finalMatches = specificMatches;
               setIsFallback(false);
             } else {
-              finalMatches = matchesByGame; // Fallback to game-only filter
+              finalMatches = matchesByGame;
               setIsFallback(true);
             }
 
           } else {
-            finalMatches = allMatches; // No preferences, show all
+            finalMatches = allMatches;
             setIsFallback(true);
           }
 
@@ -104,6 +96,8 @@ function Home() {
     );
   }
 
+  const placeholder_img = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
+
   return (
     <div className="home-container">
       <h2>Your Upcoming Matches</h2>
@@ -116,9 +110,15 @@ function Home() {
                 <strong>{match.league.name}</strong> - <span>{match.videogame.name}</span>
               </div>
               <div className="match-details">
-                <span className="team">{match.opponents[0]?.opponent.name || 'TBD'}</span>
+                <div className="team">
+                    <img src={match.opponents[0]?.opponent.image_url || placeholder_img} alt={match.opponents[0]?.opponent.name} className="team-logo" />
+                    <span>{match.opponents[0]?.opponent.name || 'TBD'}</span>
+                </div>
                 <span className="vs">vs</span>
-                <span className="team">{match.opponents[1]?.opponent.name || 'TBD'}</span>
+                <div className="team">
+                    <img src={match.opponents[1]?.opponent.image_url || placeholder_img} alt={match.opponents[1]?.opponent.name} className="team-logo" />
+                    <span>{match.opponents[1]?.opponent.name || 'TBD'}</span>
+                </div>
               </div>
               <div className="match-time">
                 {new Date(match.begin_at).toLocaleString()}

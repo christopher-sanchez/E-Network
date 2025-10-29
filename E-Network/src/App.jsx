@@ -9,8 +9,9 @@ import ForgotPassword from './pages/ForgotPassword';
 import Matches from './pages/Matches';
 import Profile from './pages/Profile';
 import Home from './pages/Home';
+import Articles from './pages/Articles'; // Import Articles
 import Header from './components/Header';
-import Articles from './pages/Articles';
+
 
 function App() {
   const [authUser, setAuthUser] = useState(null);
@@ -59,13 +60,14 @@ function App() {
           element={authUser ? <Profile /> : <Navigate to="/login" />}
         />
         <Route 
-          path="/"
-          element={authUser ? <Home /> : <Navigate to="/login" />}
-        />
-        <Route 
           path="/articles"
           element={authUser ? <Articles /> : <Navigate to="/login" />}
         />
+        <Route 
+          path="/"
+          element={authUser ? <Home /> : <Navigate to="/login" />}
+        />
+       
         <Route path="*" element={<Navigate to={authUser ? "/" : "/login"} />} />
       </Routes>
     </div>

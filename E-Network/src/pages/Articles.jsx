@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { fetchArticles } from '../utils/api';
 import './Articles.css';
 
 function Articles() {
@@ -7,24 +8,18 @@ function Articles() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchArticles = async () => {
+    const getArticles = async () => {
       try {
-        const response = await fetch('/api/articles');
-
-        if (!response.ok) {
-          throw new Error(`API call failed with status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setArticles(data.data);
+        const response = await fetchArticles();
+        setArticles(response.data.articles);
       } catch (err) {
-        setError(err.message);
+        setError('An error occurred while fetching articles.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchArticles();
+    getArticles();
   }, []);
 
   if (loading) {
@@ -32,26 +27,29 @@ function Articles() {
   }
 
   if (error) {
-    return <div className="error-container">Error: {error}</div>;
+    return <div className="error-container">{error}</div>;
   }
 
   return (
     <div className="articles-container">
-      <h2>Latest Articles</h2>
-      <div className="articles-grid">
-        {articles.map((article) => (
-          <div key={article.id} className="article-card">
+      <h2>Esports Articles</h2>
+      <ul className="article-list">
+        {articles.slice(0, 5).map(article => (
+          <li key={article._id} className="article-item">
             <a href={article.link} target="_blank" rel="noopener noreferrer">
-              <img src={article.photo_url} alt={article.title} />
+              <img src={article.media} alt={article.title} className="article-image" />
               <div className="article-content">
                 <h3>{article.title}</h3>
-                <p>{article.snippet}</p>
-                <span>{article.source}</span>
+                <p>{article.summary}</p>
+                <div className="article-meta">
+                  <span>{article.clean_url}</span>
+                  <span>{new Date(article.published_date).toLocaleDateString()}</span>
+                </div>
               </div>
             </a>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
