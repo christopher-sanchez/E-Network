@@ -1,30 +1,21 @@
+/* E-Network/src/pages/Matches.css */
+
 .matches-page-container {
-    background-color: #1a1a1a;
-    color: white;
     padding: 2rem;
-  }
-  
-  .matches-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  .match-card {
-    background-color: #2a2a2a;
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-  }
-  
-  .match-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .match-name {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
-  
+}
+
+.page-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+.loading-container,
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 200px); 
+    font-size: 1.5rem;
+}

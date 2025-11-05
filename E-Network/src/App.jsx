@@ -9,7 +9,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import Matches from './pages/Matches';
 import Profile from './pages/Profile';
 import Home from './pages/Home';
-import Articles from './pages/Articles'; // Import Articles
+import Articles from './pages/Articles';
+import Prediction from './pages/Prediction'; // Import Prediction
 import Header from './components/Header';
 
 
@@ -62,6 +63,10 @@ function App() {
         <Route 
           path="/articles"
           element={authUser ? <Articles /> : <Navigate to="/login" />}
+        />
+        <Route 
+          path="/prediction"
+          element={authUser ? <Prediction /> : <Navigate to="/login" />}
         />
         <Route 
           path="/"

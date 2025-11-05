@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { fetchUpcomingMatches } from "../utils/api";
+import "../components/MatchCard.css";
 import "./Matches.css";
 
 const Matches = () => {
@@ -8,13 +9,9 @@ const Matches = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMatches = async () => {
+    const getMatches = async () => {
       try {
-        const response = await axios.get("/api/matches/upcoming", {
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_PANDASCORE_TOKEN}`,
-          },
-        });
+        const response = await fetchUpcomingMatches();
         setMatches(response.data);
       } catch (error) {
         console.error("Error fetching matches:", error);
@@ -23,30 +20,45 @@ const Matches = () => {
       }
     };
 
-    fetchMatches();
+    getMatches();
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-4xl font-bold">Loading...</div>
-      </div>
-    );
+    return <div className="loading-container">Loading...</div>;
   }
 
   return (
     <div className="matches-page-container">
-      <h1 className="text-3xl font-bold mb-4">Upcoming Matches</h1>
-      <div className="matches-container">
+      <h1 className="page-title">Upcoming Matches</h1>
+      <div className="matches-grid">
         {matches.map((match) => (
-          <div key={match.id} className="match-card">
-            <Link to={`/match/${match.id}`}>
-              <h2 className="match-name">{match.name}</h2>
-              <p className="text-gray-600">
-                {new Date(match.begin_at).toLocaleString()}
-              </p>
-            </Link>
-          </div>
+          <Link to={`/match/${match.id}`} key={match.id} className="match-card">
+            <div className="match-info">
+              <span>{match.league.name}</span>
+              <span>{new Date(match.begin_at).toLocaleString()}</span>
+            </div>
+            <div className="teams-container">
+              <div className="team">
+                <img
+                  src={match.opponents[0]?.opponent.image_url || 'default-team-logo.png'}
+                  alt={match.opponents[0]?.opponent.name}
+                />
+                <span>
+                  {match.opponents[0]?.opponent.name}
+                </span>
+              </div>
+              <span className="vs-text">vs</span>
+              <div className="team">
+                <img
+                  src={match.opponents[1]?.opponent.image_url || 'default-team-logo.png'}
+                  alt={match.opponents[1]?.opponent.name}
+                />
+                <span>
+                  {match.opponents[1]?.opponent.name}
+                </span>
+              </div>
+            </div>
+          </Link>
         ))}
       </div>
     </div>

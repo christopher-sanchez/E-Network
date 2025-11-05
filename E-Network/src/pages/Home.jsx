@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { fetchUpcomingMatches } from '../utils/api';
-import './Home.css';
+import '../components/MatchCard.css'; // Import shared CSS
+import './Home.css'; // Import page-specific CSS
 
 function Home() {
   const [matches, setMatches] = useState([]);
@@ -12,11 +13,14 @@ function Home() {
   const [user, setUser] = useState(null);
   const [preferences, setPreferences] = useState(null);
   const [isFallback, setIsFallback] = useState(false);
+  const [welcomeMessage, setWelcomeMessage] = useState('');
+
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+        setWelcomeMessage(currentUser.displayName ? `Welcome back, ${currentUser.displayName}!` : 'Welcome back!');
         try {
           const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
           const userPrefs = userDoc.exists() ? userDoc.data().preferences : null;
@@ -66,8 +70,14 @@ function Home() {
         }
       } else {
         setUser(null);
-        setLoading(false);
-        setMatches([]);
+        setWelcomeMessage('Welcome to E-Network!');
+        fetchUpcomingMatches().then(response => {
+            setMatches(response.data.sort((a, b) => new Date(a.begin_at) - new Date(b.begin_at)));
+        }).catch(err => {
+            setError(err.message);
+        }).finally(() => {
+            setLoading(false);
+        });
       }
     });
 
@@ -82,53 +92,47 @@ function Home() {
     return <div className="error-container">Error: {error}</div>;
   }
 
-  if (!user) {
-    return <div>Please log in to see your personalized feed.</div>;
-  }
-
-  if (!preferences || !preferences.games?.length) {
+  if (user && (!preferences || !preferences.games?.length)) {
     return (
       <div className="home-container empty-feed">
         <h2>Welcome to E-Network!</h2>
-        <p>You haven't selected any favorite games yet. Visit your profile to get started.</p>
+        <p>You haven't selected any favorite games yet. Visit your profile to personalize your feed.</p>
         <Link to="/profile" className="button-link">Go to Profile</Link>
       </div>
     );
   }
 
-  const placeholder_img = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
-
   return (
     <div className="home-container">
-      <h2>Your Upcoming Matches</h2>
-      {isFallback && matches.length > 0 && <p className="fallback-message">No specific matches found for your leagues/teams. Showing all upcoming matches for your favorite games instead.</p>}
-      {matches.length > 0 ? (
-        <ul className="match-list">
-          {matches.map(match => (
-            <li key={match.id} className="match-item">
-              <div className="match-header">
-                <strong>{match.league.name}</strong> - <span>{match.videogame.name}</span>
+      <h1 className="page-title">{welcomeMessage}</h1>
+      <h2 className="sub-title">Your Upcoming Matches Feed</h2>
+      {isFallback && user && preferences && preferences.games?.length > 0 && <p className="fallback-message">No specific matches found for your leagues/teams. Showing all upcoming matches for your favorite games instead.</p>}
+      
+      <div className="matches-grid">
+        {matches.length > 0 ? (
+          matches.map(match => (
+            <Link to={`/match/${match.id}`} key={match.id} className="match-card">
+              <div className="match-info">
+                <span>{match.league.name}</span>
+                <span>{new Date(match.begin_at).toLocaleString()}</span>
               </div>
-              <div className="match-details">
+              <div className="teams-container">
                 <div className="team">
-                    <img src={match.opponents[0]?.opponent.image_url || placeholder_img} alt={match.opponents[0]?.opponent.name} className="team-logo" />
-                    <span>{match.opponents[0]?.opponent.name || 'TBD'}</span>
+                  <img src={match.opponents[0]?.opponent.image_url || 'default-team-logo.png'} alt={match.opponents[0]?.opponent.name || 'TBD'} />
+                  <span>{match.opponents[0]?.opponent.name || 'TBD'}</span>
                 </div>
-                <span className="vs">vs</span>
+                <span className="vs-text">vs</span>
                 <div className="team">
-                    <img src={match.opponents[1]?.opponent.image_url || placeholder_img} alt={match.opponents[1]?.opponent.name} className="team-logo" />
-                    <span>{match.opponents[1]?.opponent.name || 'TBD'}</span>
+                  <img src={match.opponents[1]?.opponent.image_url || 'default-team-logo.png'} alt={match.opponents[1]?.opponent.name || 'TBD'} />
+                  <span>{match.opponents[1]?.opponent.name || 'TBD'}</span>
                 </div>
               </div>
-              <div className="match-time">
-                {new Date(match.begin_at).toLocaleString()}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No upcoming matches found based on your preferences.</p>
-      )}
+            </Link>
+          ))
+        ) : (
+          <p className="no-matches-message">No upcoming matches found based on your preferences.</p>
+        )}
+      </div>
     </div>
   );
 }

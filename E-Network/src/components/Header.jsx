@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import './Header.css';
@@ -23,7 +23,7 @@ function Header() {
           <li><Link to="/profile">Profile</Link></li>
           <li><Link to="/articles">Articles</Link></li>
           <li><Link to="/matches">Matches</Link></li>
-          <li><Link to="/predictions">Predictions</Link></li>
+          <li><Link to="/prediction">Prediction</Link></li>
           <li><Link to="/settings">Settings</Link></li>
           <li><button onClick={handleLogout} className="logout-button">Logout</button></li>
         </ul>
