@@ -9,10 +9,7 @@ const pandaScoreApiClient = axios.create({
   }
 });
 
-// --- Axios Instance for RAWG API ---
-const rawgClient = axios.create({
-  baseURL: 'https://api.rawg.io/api',
-});
+
 
 // --- Axios Instance for NewsAPI (via Vite proxy) ---
 const newsApiClient = axios.create({
@@ -44,16 +41,7 @@ export const fetchGameDetails = (gameId) => {
     return pandaScoreApiClient.get(`/videogames/${gameId}`);
 };
 
-// --- RAWG API Calls (using the direct RAWG client) ---
 
-export const searchGameOnRawg = (gameName) => {
-  return rawgClient.get('/games', {
-    params: {
-      key: import.meta.env.VITE_RAWG_API_KEY,
-      search: gameName,
-    }
-  });
-};
 
 // --- NewsAPI Call ---
 export const fetchArticles = (query = 'esports') => {

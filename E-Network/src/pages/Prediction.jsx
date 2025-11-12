@@ -135,6 +135,7 @@ function Predictions() {
             <p>Total Predictions: {predictionStats.total}</p>
             <p>Correct: {predictionStats.correct}</p>
             <p>Incorrect: {predictionStats.incorrect}</p>
+            <p>Accuracy: {predictionStats.total > 0 ? ((predictionStats.correct / predictionStats.total) * 100).toFixed(2) : 0}%</p>
           </div>
         )}
         <div className="tabs">

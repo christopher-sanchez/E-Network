@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { fetchLeagues, fetchTeams } from '../utils/api'; 
 import './Profile.css';
 
 const popularGames = [
@@ -10,11 +9,70 @@ const popularGames = [
   { id: 3, name: 'Dota 2' },
   { id: 4, name: 'Counter-Strike: Global Offensive' },
   { id: 2, name: 'Overwatch' },
+  { id: 10, name: 'Rocket League' },
+  { id: 14, name: 'Rainbow Six Siege' },
+  { id: 22, name: 'Apex Legends' },
+  { id: 35, name: 'Call of Duty: Modern Warfare' },
+  { id: 29, name: 'StarCraft II' },
+  { id: 9, name: 'Hearthstone' },
+  { id: 13, name: 'PUBG' },
+  { id: 36, name: 'Street Fighter V' },
+  { id: 32, name: 'Tekken 7' },
+  { id: 25, name: 'Super Smash Bros. Ultimate' },
+  { id: 28, name: 'Fortnite' },
+  { id: 23, name: 'Arena of Valor' },
+  { id: 30, name: 'Teamfight Tactics' },
+  { id: 31, name: 'Magic: The Gathering Arena' },
+  { id: 24, name: 'Free Fire' }
+];
+
+const popularLeagues = [
+    { id: 4198, name: 'LEC' },
+    { id: 4197, name: 'LCS' },
+    { id: 293, name: 'LCK' },
+    { id: 294, name: 'LPL' },
+    { id: 4331, name: 'VCT Americas' },
+    { id: 4332, name: 'VCT EMEA' },
+    { id: 4333, name: 'VCT Pacific' },
+    { id: 4473, name: 'VCT China' },
+    { id: 4259, name: 'The International' },
+    { id: 4260, name: 'ESL One' },
+    { id: 4243, name: 'BLAST Premier' },
+    { id: 4152, name: 'Intel Extreme Masters' },
+    { id: 4208, name: 'Overwatch League' },
+    { id: 4252, name: 'Rocket League Championship Series' },
+    { id: 4248, name: 'Six Invitational' },
+    { id: 4395, name: 'Apex Legends Global Series' },
+    { id: 4209, name: 'Call of Duty League' },
+    { id: 4249, name: 'Evolution Championship Series (EVO)'},
+    { id: 4160, name: 'PUBG Global Championship' },
+    { id: 4172, name: 'Free Fire World Series' }
+];
+
+const popularOrgs = [
+    { id: 10, name: 'Team Liquid' },
+    { id: 3, name: 'Fnatic' },
+    { id: 1, name: 'G2 Esports' },
+    { id: 2, name: 'Cloud9' },
+    { id: 7, name: 'T1' },
+    { id: 602, name: 'Natus Vincere' },
+    { id: 8, name: 'Team SoloMid (TSM)' },
+    { id: 15, name: 'FaZe Clan' },
+    { id: 5, name: 'Evil Geniuses' },
+    { id: 12, name: '100 Thieves' },
+    { id: 6, name: 'Team Secret' },
+    { id: 4, name: 'Virtus.pro' },
+    { id: 9, name: 'OG' },
+    { id: 16, name: 'Sentinels' },
+    { id: 11, name: 'NRG Esports' },
+    { id: 39, name: 'Gen.G' },
+    { id: 18, name: 'Ninjas in Pyjamas' },
+    { id: 30, name: 'Paper Rex' },
+    { id: 25, name: 'LOUD' },
+    { id: 13, name: 'Astralis' }
 ];
 
 function Profile() {
-  const [leagues, setLeagues] = useState([]);
-  const [teams, setTeams] = useState([]);
   const [selectedGames, setSelectedGames] = useState([]);
   const [selectedLeagues, setSelectedLeagues] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
@@ -29,15 +87,8 @@ function Profile() {
       if (currentUser) {
         setUser(currentUser);
         try {
-          const [prefsDoc, leaguesResponse, teamsResponse] = await Promise.all([
-            getDoc(doc(db, 'users', currentUser.uid)),
-            fetchLeagues(),
-            fetchTeams()
-          ]);
+          const prefsDoc = await getDoc(doc(db, 'users', currentUser.uid));
           
-          setLeagues(leaguesResponse.data);
-          setTeams(teamsResponse.data);
-
           if (prefsDoc.exists()) {
             const prefs = prefsDoc.data().preferences || {};
             setSelectedGames(prefs.games || []);
@@ -118,21 +169,21 @@ function Profile() {
             value={selectedLeagues} 
             onChange={(e) => handleSelectChange(e, setSelectedLeagues)} 
             className="multi-select">
-            {leagues.map(league => (
+            {popularLeagues.map(league => (
               <option key={league.id} value={league.id}>{league.name}</option>
             ))}
           </select>
         </div>
 
         <div className="select-group">
-          <label htmlFor="teams-select">Favorite Teams</label>
+          <label htmlFor="teams-select">Favorite Orgs</label>
           <select 
             multiple 
             id="teams-select" 
             value={selectedTeams} 
             onChange={(e) => handleSelectChange(e, setSelectedTeams)} 
             className="multi-select">
-            {teams.map(team => (
+            {popularOrgs.map(team => (
               <option key={team.id} value={team.id}>{team.name}</option>
             ))}
           </select>
