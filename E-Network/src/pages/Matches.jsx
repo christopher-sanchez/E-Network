@@ -11,7 +11,9 @@ const Matches = () => {
   useEffect(() => {
     const getMatches = async () => {
       try {
+        // Api call stored in api.js
         const response = await fetchUpcomingMatches();
+        
         setMatches(response.data);
       } catch (error) {
         console.error("Error fetching matches:", error);

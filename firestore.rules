@@ -1,14 +1,26 @@
 rules_version = '2';
-service cloud.firestore {
-    match /databases/{database}/documents {
-          // Allow users to read and write their own profile data
-              match /users/{userId} {
-                      allow read, write: if request.auth != null && request.auth.uid == userId;
-              }
 
-                  // Allow users to read and write their own predictions
-                      match /predictions/{userId} {
-                              allow read, write: if request.auth != null && request.auth.uid ==
-                      }
-              }
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // This rule is for your new predictions feature.
+    // It assumes a top-level 'predictions' collection where each document ID is a user's UID.
+    // This matches the query in your Prediction.jsx file.
+    match /predictions/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
+
+    // These are the other rules you had, now cleaned up.
+    // It assumes a 'users' collection for user profile data.
+    match /users/{userId} {
+      // Allow users to read and write their own top-level data.
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // This rule would be for a 'preferences' subcollection under each user.
+      // Make sure your code for preferences matches this path if you use it.
+      match /preferences/{preferenceId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}
