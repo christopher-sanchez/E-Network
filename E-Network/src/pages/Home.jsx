@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { sendEmailVerification } from 'firebase/auth';
 import { fetchUpcomingMatches } from '../utils/api';
 import '../components/MatchCard.css'; // Import shared CSS
 import './Home.css'; // Import page-specific CSS
@@ -14,12 +15,17 @@ function Home() {
   const [preferences, setPreferences] = useState(null);
   const [isFallback, setIsFallback] = useState(false);
   const [welcomeMessage, setWelcomeMessage] = useState('');
-
+  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+        if (!currentUser.emailVerified) {
+          setShowVerificationMessage(true);
+        } else {
+          setShowVerificationMessage(false);
+        }
         setWelcomeMessage(currentUser.displayName ? `Welcome back, ${currentUser.displayName}!` : 'Welcome back!');
         try {
           const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
@@ -70,6 +76,7 @@ function Home() {
         }
       } else {
         setUser(null);
+        setShowVerificationMessage(false);
         setWelcomeMessage('Welcome to E-Network!');
         fetchUpcomingMatches().then(response => {
             setMatches(response.data.sort((a, b) => new Date(a.begin_at) - new Date(b.begin_at)));
@@ -84,6 +91,17 @@ function Home() {
     return () => unsubscribe();
   }, []);
 
+  const handleResendVerification = async () => {
+    if (auth.currentUser) {
+      try {
+        await sendEmailVerification(auth.currentUser);
+        alert("Verification email sent!");
+      } catch (error) {
+        alert("Error sending verification email: " + error.message);
+      }
+    }
+  };
+
   if (loading) {
     return <div className="loading-container">Loading your feed...</div>;
   }
@@ -95,6 +113,12 @@ function Home() {
   if (user && (!preferences || !preferences.games?.length)) {
     return (
       <div className="home-container empty-feed">
+        {showVerificationMessage && (
+          <div className="verification-message">
+            <p>Please verify your email address. A verification email has been sent to {user.email}.</p>
+            <button onClick={handleResendVerification}>Resend Verification Email</button>
+          </div>
+        )}
         <h2>Welcome to E-Network!</h2>
         <p>You haven't selected any favorite games yet. Visit your profile to personalize your feed.</p>
         <Link to="/profile" className="button-link">Go to Profile</Link>
@@ -104,6 +128,12 @@ function Home() {
 
   return (
     <div className="home-container">
+      {showVerificationMessage && (
+        <div className="verification-message">
+          <p>Please verify your email address. A verification email has been sent to {user.email}.</p>
+          <button onClick={handleResendVerification}>Resend Verification Email</button>
+        </div>
+      )}
       <h1 className="page-title">{welcomeMessage}</h1>
       <h2 className="sub-title">Your Upcoming Matches Feed</h2>
       {isFallback && user && preferences && preferences.games?.length > 0 && <p className="fallback-message">No specific matches found for your leagues/teams. Showing all upcoming matches for your favorite games instead.</p>}

@@ -1,0 +1,123 @@
+.match-details-container {
+    padding: 2rem;
+    background-color: #282c34;
+    color: #fff;
+}
+
+.match-details-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #fff;
+}
+
+.match-header {
+    background-color: #333;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.match-header-info {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.match-header-info h2 {
+    margin: 0;
+    font-size: 2rem;
+    color: #fff;
+}
+
+.match-header-info p {
+    margin: 0;
+    color: #ccc;
+}
+
+.match-header-teams {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.team-info {
+    text-align: center;
+}
+
+.team-info img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+}
+
+.team-info h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.vs {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #61dafb;
+}
+
+.players-section {
+    background-color: #333;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.players-section h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #fff;
+}
+
+.players-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.team-players {
+    width: 45%;
+}
+
+.team-players h4 {
+    font-size: 1.25rem;
+    color: #fff;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #61dafb;
+    padding-bottom: 0.5rem;
+}
+
+.team-players ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.team-players li {
+    background-color: #444;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+.team-players li:hover {
+    background-color: #555;
+}
+
+.loading-container,
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.5rem;
+    color: #ccc;
+}

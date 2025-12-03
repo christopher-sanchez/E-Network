@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,15 +11,19 @@ function Register() {
   const [username, setUsername] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [verificationMessage, setVerificationMessage] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setVerificationMessage('');
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+
+      await sendEmailVerification(user);
 
       // Create a document in Firestore for the new user
       await setDoc(doc(db, "users", user.uid), {
@@ -27,7 +31,10 @@ function Register() {
         email: email,
       });
 
-      navigate('/'); // Redirect to home page on successful registration
+      setVerificationMessage('A verification email has been sent to your email address. Please verify your email to login.');
+      setTimeout(() => {
+        navigate('/login');
+      }, 5000);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -40,39 +47,40 @@ function Register() {
       <form className="register-form" onSubmit={handleRegister}>
         <h2>Register</h2>
         {error && <p className="error-message">{error}</p>}
+        {verificationMessage && <p className="verification-message">{verificationMessage}</p>}
         <div className="input-group">
           <label htmlFor="username">Username</label>
-          <input 
-            type="text" 
-            id="username" 
-            name="username" 
+          <input
+            type="text"
+            id="username"
+            name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required 
+            required
             disabled={loading}
           />
         </div>
         <div className="input-group">
           <label htmlFor="email">Email</label>
-          <input 
-            type="email" 
-            id="email" 
-            name="email" 
+          <input
+            type="email"
+            id="email"
+            name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required 
+            required
             disabled={loading}
           />
         </div>
         <div className="input-group">
           <label htmlFor="password">Password</label>
-          <input 
-            type="password" 
-            id="password" 
+          <input
+            type="password"
+            id="password"
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required 
+            required
             disabled={loading}
           />
         </div>

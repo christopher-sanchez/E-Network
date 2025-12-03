@@ -12,7 +12,7 @@ import Home from './pages/Home';
 import Articles from './pages/Articles';
 import Prediction from './pages/Prediction'; // Import Prediction
 import Header from './components/Header';
-
+import MatchDetails from './pages/MatchDetails';
 
 function App() {
   const [authUser, setAuthUser] = useState(null);
@@ -55,6 +55,10 @@ function App() {
         <Route 
           path="/matches"
           element={authUser ? <Matches /> : <Navigate to="/login" />}
+        />
+        <Route 
+          path="/match/:matchId"
+          element={authUser ? <MatchDetails /> : <Navigate to="/login" />}
         />
         <Route 
           path="/profile"

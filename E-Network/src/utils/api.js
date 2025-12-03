@@ -41,6 +41,10 @@ export const fetchGameDetails = (gameId) => {
     return pandaScoreApiClient.get(`/videogames/${gameId}`);
 };
 
+export const fetchMatchDetails = (matchId) => {
+    return pandaScoreApiClient.get(`/matches/${matchId}`);
+}
+
 
 
 // --- NewsAPI Call ---
