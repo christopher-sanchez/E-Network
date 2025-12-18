@@ -17,7 +17,7 @@ function Login() {
     setError(null);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/'); // Redirect to home page on successful login
+      navigate('/'); 
     } catch (error) {
       setError(error.message);
     } finally {
@@ -31,7 +31,7 @@ function Login() {
     setError(null);
     try {
       await signInWithPopup(auth, provider);
-      navigate('/'); // Redirect to home page
+      navigate('/'); 
     } catch (error) {
       setError(error.message);
     } finally {

@@ -10,7 +10,7 @@ import Matches from './pages/Matches';
 import Profile from './pages/Profile';
 import Home from './pages/Home';
 import Articles from './pages/Articles';
-import Prediction from './pages/Prediction'; // Import Prediction
+import Prediction from './pages/Prediction';
 import Header from './components/Header';
 import MatchDetails from './pages/MatchDetails';
 
